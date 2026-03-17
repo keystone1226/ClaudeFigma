@@ -1,69 +1,10 @@
 <!--
   =====================================================
   Confluence HTML 매크로용 DOS 프롬프트 타이핑 애니메이션
+  - 프레임: 600×400px / DOS창: 400px / 파티클 마우스 회피 인터랙션
   사용법: Confluence 페이지 편집 → 삽입 → HTML 매크로 → 아래 코드 전체 붙여넣기
   =====================================================
 -->
-<div style="display:flex;justify-content:center;align-items:center;padding:20px;font-family:'Courier New',Courier,monospace;">
-  <div style="position:relative;display:inline-block;">
-
-    <!-- DOS 창 본체 -->
-    <div id="cf-dos-win" style="
-      background-color:#0a0a0a;
-      border:2px solid #333;
-      border-radius:4px;
-      width:600px;
-      box-shadow:0 0 30px rgba(0,255,0,0.15);
-      overflow:hidden;
-    ">
-      <!-- 타이틀바 -->
-      <div style="
-        background:linear-gradient(90deg,#1a1a1a,#2a2a2a);
-        padding:6px 12px;
-        display:flex;
-        align-items:center;
-        border-bottom:1px solid #333;
-      ">
-        <div style="display:flex;gap:6px;">
-          <div style="width:12px;height:12px;border-radius:50%;background:#ff5f56;"></div>
-          <div style="width:12px;height:12px;border-radius:50%;background:#ffbd2e;"></div>
-          <div style="width:12px;height:12px;border-radius:50%;background:#27c93f;"></div>
-        </div>
-        <div style="flex:1;text-align:center;color:#aaa;font-size:12px;letter-spacing:1px;margin-right:42px;">
-          C:\WINDOWS\system32\cmd.exe
-        </div>
-      </div>
-
-      <!-- 본문 -->
-      <div style="padding:20px 24px 28px;">
-        <div style="color:#555;font-size:14px;line-height:1.8;white-space:pre;">Microsoft Windows [Version 10.0.19045.4170]</div>
-        <div style="color:#555;font-size:14px;line-height:1.8;white-space:pre;">(c) Microsoft Corporation. All rights reserved.</div>
-        <div style="font-size:14px;line-height:1.8;">&nbsp;</div>
-        <div style="display:flex;align-items:center;margin-top:4px;">
-          <span style="color:#00ff41;font-size:14px;white-space:nowrap;">C:\Users\Admin&gt;&nbsp;</span>
-          <span id="cf-typed" style="color:#e0e0e0;font-size:14px;white-space:pre;"></span
-          ><span id="cf-cursor" style="
-            display:inline-block;
-            width:9px;
-            height:16px;
-            background:#00ff41;
-            margin-left:1px;
-            vertical-align:middle;
-          "></span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 스캔라인 오버레이 -->
-    <div style="
-      position:absolute;top:0;left:0;right:0;bottom:0;
-      pointer-events:none;
-      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px);
-      border-radius:4px;
-    "></div>
-
-  </div>
-</div>
 
 <style>
   @keyframes cf-blink {
@@ -73,35 +14,238 @@
   #cf-cursor { animation: cf-blink 1s step-start infinite; }
 </style>
 
+<!-- 전체 프레임 600×400 -->
+<div id="cf-frame" style="
+  position:relative;
+  width:600px;
+  height:400px;
+  background:#06090f;
+  border-radius:8px;
+  overflow:hidden;
+  margin:0 auto;
+  font-family:'Courier New',Courier,monospace;
+">
+
+  <!-- 파티클 캔버스 (DOS창 뒤) -->
+  <canvas id="cf-canvas" style="
+    position:absolute;
+    top:0;left:0;
+    width:100%;height:100%;
+    pointer-events:none;
+    z-index:0;
+  "></canvas>
+
+  <!-- DOS 창 (중앙, 400px) -->
+  <div id="cf-dos-win" style="
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    width:400px;
+    background-color:#0a0a0a;
+    border:2px solid #2a2a2a;
+    border-radius:4px;
+    box-shadow:0 0 40px rgba(0,255,65,0.2), 0 0 80px rgba(0,255,65,0.07);
+    overflow:hidden;
+    z-index:1;
+  ">
+    <!-- 타이틀바 -->
+    <div style="
+      background:linear-gradient(90deg,#1a1a1a,#252525);
+      padding:6px 12px;
+      display:flex;
+      align-items:center;
+      border-bottom:1px solid #2a2a2a;
+    ">
+      <div style="display:flex;gap:6px;">
+        <div style="width:11px;height:11px;border-radius:50%;background:#ff5f56;"></div>
+        <div style="width:11px;height:11px;border-radius:50%;background:#ffbd2e;"></div>
+        <div style="width:11px;height:11px;border-radius:50%;background:#27c93f;"></div>
+      </div>
+      <div style="flex:1;text-align:center;color:#666;font-size:11px;letter-spacing:1px;margin-right:36px;">
+        C:\WINDOWS\system32\cmd.exe
+      </div>
+    </div>
+
+    <!-- 본문 -->
+    <div style="padding:16px 20px 22px;">
+      <div style="color:#444;font-size:12px;line-height:1.7;white-space:pre;">Microsoft Windows [Version 10.0.19045.4170]</div>
+      <div style="color:#444;font-size:12px;line-height:1.7;white-space:pre;">(c) Microsoft Corporation. All rights reserved.</div>
+      <div style="font-size:12px;line-height:1.7;">&nbsp;</div>
+      <div style="display:flex;align-items:center;margin-top:2px;">
+        <span style="color:#00ff41;font-size:13px;white-space:nowrap;">C:\Users\Admin&gt;&nbsp;</span>
+        <span id="cf-typed" style="color:#e0e0e0;font-size:13px;white-space:pre;"></span
+        ><span id="cf-cursor" style="
+          display:inline-block;
+          width:8px;height:15px;
+          background:#00ff41;
+          margin-left:1px;
+          vertical-align:middle;
+        "></span>
+      </div>
+    </div>
+
+    <!-- 스캔라인 오버레이 -->
+    <div style="
+      position:absolute;top:0;left:0;right:0;bottom:0;
+      pointer-events:none;
+      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);
+    "></div>
+  </div>
+
+</div>
+
 <script>
-(function() {
+(function () {
+  /* ── 타이핑 애니메이션 ── */
   var msg    = "동영상 아이디어가 없습니다. 제보바랍니다.";
   var el     = document.getElementById('cf-typed');
   var idx    = 0;
-  var TSPEED = 110;   // 타이핑 속도 (ms)
-  var ESPEED = 65;    // 지우기 속도 (ms)
-  var PAUSE1 = 2200;  // 다 쓴 후 대기
-  var PAUSE2 = 700;   // 다 지운 후 대기
+  var TSPEED = 110;
+  var ESPEED = 65;
+  var PAUSE1 = 2200;
+  var PAUSE2 = 700;
 
   function type() {
-    if (idx < msg.length) {
-      el.textContent += msg[idx++];
-      setTimeout(type, TSPEED);
-    } else {
-      setTimeout(erase, PAUSE1);
-    }
+    if (idx < msg.length) { el.textContent += msg[idx++]; setTimeout(type, TSPEED); }
+    else setTimeout(erase, PAUSE1);
   }
-
   function erase() {
-    if (el.textContent.length > 0) {
-      el.textContent = el.textContent.slice(0, -1);
-      setTimeout(erase, ESPEED);
-    } else {
-      idx = 0;
-      setTimeout(type, PAUSE2);
-    }
+    if (el.textContent.length > 0) { el.textContent = el.textContent.slice(0,-1); setTimeout(erase, ESPEED); }
+    else { idx = 0; setTimeout(type, PAUSE2); }
+  }
+  setTimeout(type, 900);
+
+  /* ── 파티클 시스템 ── */
+  var frame  = document.getElementById('cf-frame');
+  var canvas = document.getElementById('cf-canvas');
+  var ctx    = canvas.getContext('2d');
+  var W = 600, H = 400;
+  canvas.width  = W;
+  canvas.height = H;
+
+  var mouse = { x: W / 2, y: H / 2 };
+  var FLEE_RADIUS = 90;   // 마우스 회피 감지 반경
+  var FLEE_FORCE  = 6.5;  // 회피 힘
+  var FRICTION    = 0.88; // 감속 계수
+  var RETURN_SPD  = 0.045; // 원래 자리로 복귀 속도
+
+  /* 마우스 위치 추적 (프레임 기준) */
+  frame.addEventListener('mousemove', function(e) {
+    var r = frame.getBoundingClientRect();
+    mouse.x = e.clientX - r.left;
+    mouse.y = e.clientY - r.top;
+  });
+  frame.addEventListener('mouseleave', function() {
+    mouse.x = -999; mouse.y = -999;
+  });
+
+  /* 파티클 색상 팔레트 (녹색 계열 + 흰색 희미하게) */
+  var COLORS = [
+    'rgba(0,255,65,',
+    'rgba(0,200,50,',
+    'rgba(0,160,40,',
+    'rgba(100,255,120,',
+    'rgba(180,255,190,',
+    'rgba(0,255,200,',
+  ];
+
+  function randColor() {
+    return COLORS[Math.floor(Math.random() * COLORS.length)];
   }
 
-  setTimeout(type, 900);
+  /* 파티클 생성 (DOS창 영역 제외하고 분포) */
+  var DOS_L = (W - 400) / 2;   // 100
+  var DOS_R = DOS_L + 400;     // 500
+  var DOS_T = (H - 160) / 2;   // 120 (DOS창 높이 약 160)
+  var DOS_B = DOS_T + 160;     // 280
+
+  function spawnPos() {
+    /* DOS창 안 쪽은 피하되, 전체 프레임 안에 배치 */
+    var x, y, tries = 0;
+    do {
+      x = Math.random() * W;
+      y = Math.random() * H;
+      tries++;
+    } while (
+      tries < 30 &&
+      x > DOS_L - 20 && x < DOS_R + 20 &&
+      y > DOS_T - 20 && y < DOS_B + 20
+    );
+    return { x: x, y: y };
+  }
+
+  var particles = [];
+  var COUNT = 55;
+
+  for (var i = 0; i < COUNT; i++) {
+    var p = spawnPos();
+    var r = 2.5 + Math.random() * 7.5; // 반지름 2.5~10 → 지름 5~20px
+    var col = randColor();
+    particles.push({
+      ox: p.x, oy: p.y,   // 원래 위치
+      x:  p.x, y:  p.y,   // 현재 위치
+      vx: 0,   vy: 0,     // 속도
+      r:  r,
+      col: col,
+      alpha: 0.3 + Math.random() * 0.55,
+      // 살짝 자체 부유 움직임
+      floatAngle: Math.random() * Math.PI * 2,
+      floatSpeed: 0.003 + Math.random() * 0.007,
+      floatAmp:   4 + Math.random() * 8,
+    });
+  }
+
+  function animate() {
+    ctx.clearRect(0, 0, W, H);
+
+    for (var i = 0; i < particles.length; i++) {
+      var p = particles[i];
+
+      /* 부유 원래위치 업데이트 */
+      p.floatAngle += p.floatSpeed;
+      var tx = p.ox + Math.cos(p.floatAngle) * p.floatAmp;
+      var ty = p.oy + Math.sin(p.floatAngle * 0.7) * p.floatAmp;
+
+      /* 마우스 회피 */
+      var dx = p.x - mouse.x;
+      var dy = p.y - mouse.y;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      if (dist < FLEE_RADIUS && dist > 0) {
+        var force = (FLEE_RADIUS - dist) / FLEE_RADIUS * FLEE_FORCE;
+        p.vx += (dx / dist) * force;
+        p.vy += (dy / dist) * force;
+      }
+
+      /* 원래 자리로 복귀 */
+      p.vx += (tx - p.x) * RETURN_SPD;
+      p.vy += (ty - p.y) * RETURN_SPD;
+
+      /* 감속 */
+      p.vx *= FRICTION;
+      p.vy *= FRICTION;
+
+      p.x += p.vx;
+      p.y += p.vy;
+
+      /* 테두리 반사 */
+      if (p.x < p.r) { p.x = p.r; p.vx *= -0.5; }
+      if (p.x > W - p.r) { p.x = W - p.r; p.vx *= -0.5; }
+      if (p.y < p.r) { p.y = p.r; p.vy *= -0.5; }
+      if (p.y > H - p.r) { p.y = H - p.r; p.vy *= -0.5; }
+
+      /* 그리기 */
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.col + p.alpha + ')';
+      ctx.shadowColor = p.col + '0.8)';
+      ctx.shadowBlur  = p.r * 2;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    }
+
+    requestAnimationFrame(animate);
+  }
+
+  animate();
 })();
 </script>

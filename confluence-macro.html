@@ -1,0 +1,107 @@
+<!--
+  =====================================================
+  Confluence HTML 매크로용 DOS 프롬프트 타이핑 애니메이션
+  사용법: Confluence 페이지 편집 → 삽입 → HTML 매크로 → 아래 코드 전체 붙여넣기
+  =====================================================
+-->
+<div style="display:flex;justify-content:center;align-items:center;padding:20px;font-family:'Courier New',Courier,monospace;">
+  <div style="position:relative;display:inline-block;">
+
+    <!-- DOS 창 본체 -->
+    <div id="cf-dos-win" style="
+      background-color:#0a0a0a;
+      border:2px solid #333;
+      border-radius:4px;
+      width:600px;
+      box-shadow:0 0 30px rgba(0,255,0,0.15);
+      overflow:hidden;
+    ">
+      <!-- 타이틀바 -->
+      <div style="
+        background:linear-gradient(90deg,#1a1a1a,#2a2a2a);
+        padding:6px 12px;
+        display:flex;
+        align-items:center;
+        border-bottom:1px solid #333;
+      ">
+        <div style="display:flex;gap:6px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:#ff5f56;"></div>
+          <div style="width:12px;height:12px;border-radius:50%;background:#ffbd2e;"></div>
+          <div style="width:12px;height:12px;border-radius:50%;background:#27c93f;"></div>
+        </div>
+        <div style="flex:1;text-align:center;color:#aaa;font-size:12px;letter-spacing:1px;margin-right:42px;">
+          C:\WINDOWS\system32\cmd.exe
+        </div>
+      </div>
+
+      <!-- 본문 -->
+      <div style="padding:20px 24px 28px;">
+        <div style="color:#555;font-size:14px;line-height:1.8;white-space:pre;">Microsoft Windows [Version 10.0.19045.4170]</div>
+        <div style="color:#555;font-size:14px;line-height:1.8;white-space:pre;">(c) Microsoft Corporation. All rights reserved.</div>
+        <div style="font-size:14px;line-height:1.8;">&nbsp;</div>
+        <div style="display:flex;align-items:center;margin-top:4px;">
+          <span style="color:#00ff41;font-size:14px;white-space:nowrap;">C:\Users\Admin&gt;&nbsp;</span>
+          <span id="cf-typed" style="color:#e0e0e0;font-size:14px;white-space:pre;"></span
+          ><span id="cf-cursor" style="
+            display:inline-block;
+            width:9px;
+            height:16px;
+            background:#00ff41;
+            margin-left:1px;
+            vertical-align:middle;
+          "></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 스캔라인 오버레이 -->
+    <div style="
+      position:absolute;top:0;left:0;right:0;bottom:0;
+      pointer-events:none;
+      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.07) 2px,rgba(0,0,0,0.07) 4px);
+      border-radius:4px;
+    "></div>
+
+  </div>
+</div>
+
+<style>
+  @keyframes cf-blink {
+    0%,100% { opacity:1; }
+    50%      { opacity:0; }
+  }
+  #cf-cursor { animation: cf-blink 1s step-start infinite; }
+</style>
+
+<script>
+(function() {
+  var msg    = "동영상 아이디어가 없습니다. 제보바랍니다.";
+  var el     = document.getElementById('cf-typed');
+  var idx    = 0;
+  var TSPEED = 110;   // 타이핑 속도 (ms)
+  var ESPEED = 65;    // 지우기 속도 (ms)
+  var PAUSE1 = 2200;  // 다 쓴 후 대기
+  var PAUSE2 = 700;   // 다 지운 후 대기
+
+  function type() {
+    if (idx < msg.length) {
+      el.textContent += msg[idx++];
+      setTimeout(type, TSPEED);
+    } else {
+      setTimeout(erase, PAUSE1);
+    }
+  }
+
+  function erase() {
+    if (el.textContent.length > 0) {
+      el.textContent = el.textContent.slice(0, -1);
+      setTimeout(erase, ESPEED);
+    } else {
+      idx = 0;
+      setTimeout(type, PAUSE2);
+    }
+  }
+
+  setTimeout(type, 900);
+})();
+</script>

@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DOS Prompt Animation</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: transparent;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: 'Courier New', Courier, monospace;
+    }
+
+    .dos-window {
+      background-color: #0a0a0a;
+      border: 2px solid #333;
+      border-radius: 4px;
+      width: 600px;
+      box-shadow: 0 0 30px rgba(0, 255, 0, 0.15);
+      overflow: hidden;
+    }
+
+    .dos-titlebar {
+      background: linear-gradient(90deg, #1a1a1a, #2a2a2a);
+      padding: 6px 12px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #333;
+    }
+
+    .dos-titlebar-text {
+      color: #aaa;
+      font-size: 12px;
+      letter-spacing: 1px;
+      flex: 1;
+    }
+
+    .dos-titlebar-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .dos-btn {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+    }
+
+    .dos-btn-close  { background: #ff5f56; }
+    .dos-btn-min    { background: #ffbd2e; }
+    .dos-btn-max    { background: #27c93f; }
+
+    .dos-body {
+      padding: 20px 24px 28px;
+    }
+
+    .dos-line {
+      color: #c0c0c0;
+      font-size: 14px;
+      line-height: 1.8;
+      white-space: pre;
+    }
+
+    .dos-line.dim {
+      color: #555;
+    }
+
+    .dos-line.bright {
+      color: #00ff41;
+    }
+
+    .prompt-line {
+      display: flex;
+      align-items: center;
+      margin-top: 8px;
+    }
+
+    .prompt-prefix {
+      color: #00ff41;
+      font-size: 14px;
+      white-space: nowrap;
+    }
+
+    .typed-text {
+      color: #e0e0e0;
+      font-size: 14px;
+      white-space: pre;
+    }
+
+    .cursor {
+      display: inline-block;
+      width: 9px;
+      height: 16px;
+      background-color: #00ff41;
+      margin-left: 1px;
+      vertical-align: middle;
+      animation: blink 1s step-start infinite;
+    }
+
+    .cursor.hidden {
+      visibility: hidden;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50%       { opacity: 0; }
+    }
+
+    .scanline {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2px,
+        rgba(0, 0, 0, 0.08) 2px,
+        rgba(0, 0, 0, 0.08) 4px
+      );
+      border-radius: 4px;
+    }
+
+    .dos-window-wrap {
+      position: relative;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+
+<div class="dos-window-wrap">
+  <div class="dos-window">
+    <div class="dos-titlebar">
+      <div class="dos-titlebar-buttons">
+        <div class="dos-btn dos-btn-close"></div>
+        <div class="dos-btn dos-btn-min"></div>
+        <div class="dos-btn dos-btn-max"></div>
+      </div>
+      <div class="dos-titlebar-text" style="text-align:center; margin-right:42px;">C:\WINDOWS\system32\cmd.exe</div>
+    </div>
+    <div class="dos-body">
+      <div class="dos-line dim">Microsoft Windows [Version 10.0.19045.4170]</div>
+      <div class="dos-line dim">(c) Microsoft Corporation. All rights reserved.</div>
+      <div class="dos-line">&nbsp;</div>
+      <div class="prompt-line">
+        <span class="prompt-prefix">C:\Users\Admin&gt;&nbsp;</span>
+        <span class="typed-text" id="typedText"></span><span class="cursor" id="cursor"></span>
+      </div>
+    </div>
+  </div>
+  <div class="scanline"></div>
+</div>
+
+<script>
+  const message = "동영상 아이디어가 없습니다. 제보바랍니다.";
+  const typedEl = document.getElementById('typedText');
+  const cursorEl = document.getElementById('cursor');
+
+  let index = 0;
+  let phase = 'typing'; // typing -> pause -> erasing -> pause2 -> typing
+
+  const TYPING_SPEED   = 100; // ms per character
+  const ERASE_SPEED    = 60;
+  const PAUSE_AFTER    = 2000;
+  const PAUSE_BEFORE   = 800;
+
+  function type() {
+    if (index < message.length) {
+      typedEl.textContent += message[index];
+      index++;
+      setTimeout(type, TYPING_SPEED);
+    } else {
+      phase = 'pause';
+      setTimeout(erase, PAUSE_AFTER);
+    }
+  }
+
+  function erase() {
+    if (typedEl.textContent.length > 0) {
+      typedEl.textContent = typedEl.textContent.slice(0, -1);
+      setTimeout(erase, ERASE_SPEED);
+    } else {
+      index = 0;
+      phase = 'pause2';
+      setTimeout(type, PAUSE_BEFORE);
+    }
+  }
+
+  // 시작 딜레이
+  setTimeout(type, 800);
+</script>
+
+</body>
+</html>

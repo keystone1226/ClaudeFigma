@@ -12,6 +12,7 @@
       justify-content:center;
       align-items:center;
       min-height:100vh;
+      padding:20px;
       font-family:'Courier New',Courier,monospace;
     }
     @keyframes cf-blink {
@@ -23,164 +24,165 @@
 </head>
 <body>
 
-<!-- 전체 프레임 600×400 -->
-<div id="cf-frame" style="
+<!-- 반응형 래퍼 -->
+<div id="cf-wrapper" style="
+  width:100%;
+  min-width:300px;
   position:relative;
-  width:600px;
-  height:400px;
-  background:#06090f;
-  border-radius:8px;
   overflow:hidden;
-  font-family:'Courier New',Courier,monospace;
 ">
-  <canvas id="cf-canvas" style="
-    position:absolute;top:0;left:0;
-    width:100%;height:100%;
-    pointer-events:none;z-index:0;
-  "></canvas>
-
-  <div id="cf-dos-win" style="
+  <!-- 600×400 설계 프레임 -->
+  <div id="cf-frame" style="
     position:absolute;
-    top:50%;left:50%;
-    transform:translate(-50%,-50%);
-    width:400px;
-    background-color:#0a0a0a;
-    border:2px solid #2a2a2a;
-    border-radius:4px;
-    box-shadow:0 0 40px rgba(0,255,65,0.2),0 0 80px rgba(0,255,65,0.07);
-    overflow:hidden;
-    z-index:1;
+    top:0;left:0;
+    width:600px;
+    height:400px;
+    background:#06090f;
+    border-radius:8px;
+    transform-origin:top left;
+    font-family:'Courier New',Courier,monospace;
   ">
+    <canvas id="cf-canvas" style="
+      position:absolute;top:0;left:0;
+      width:100%;height:100%;
+      pointer-events:none;z-index:0;
+    "></canvas>
+
     <div style="
-      background:linear-gradient(90deg,#1a1a1a,#252525);
-      padding:6px 12px;
-      display:flex;align-items:center;
-      border-bottom:1px solid #2a2a2a;
+      position:absolute;top:50%;left:50%;
+      transform:translate(-50%,-50%);
+      width:400px;
+      background-color:#0a0a0a;
+      border:2px solid #2a2a2a;
+      border-radius:4px;
+      box-shadow:0 0 40px rgba(0,255,65,0.2),0 0 80px rgba(0,255,65,0.07);
+      overflow:hidden;z-index:1;
     ">
-      <div style="display:flex;gap:6px;">
-        <div style="width:11px;height:11px;border-radius:50%;background:#ff5f56;"></div>
-        <div style="width:11px;height:11px;border-radius:50%;background:#ffbd2e;"></div>
-        <div style="width:11px;height:11px;border-radius:50%;background:#27c93f;"></div>
+      <div style="
+        background:linear-gradient(90deg,#1a1a1a,#252525);
+        padding:6px 12px;display:flex;align-items:center;
+        border-bottom:1px solid #2a2a2a;
+      ">
+        <div style="display:flex;gap:6px;">
+          <div style="width:11px;height:11px;border-radius:50%;background:#ff5f56;"></div>
+          <div style="width:11px;height:11px;border-radius:50%;background:#ffbd2e;"></div>
+          <div style="width:11px;height:11px;border-radius:50%;background:#27c93f;"></div>
+        </div>
+        <div id="cf-title" style="flex:1;text-align:center;color:#666;letter-spacing:1px;margin-right:36px;font-size:11px;">
+          C:\WINDOWS\system32\cmd.exe
+        </div>
       </div>
-      <div style="flex:1;text-align:center;color:#666;font-size:11px;letter-spacing:1px;margin-right:36px;">
-        C:\WINDOWS\system32\cmd.exe
+      <div style="padding:16px 20px 22px;">
+        <div id="cf-sys1" style="color:#444;line-height:1.7;white-space:pre;font-size:12px;">Microsoft Windows [Version 10.0.19045.4170]</div>
+        <div id="cf-sys2" style="color:#444;line-height:1.7;white-space:pre;font-size:12px;">(c) Microsoft Corporation. All rights reserved.</div>
+        <div style="line-height:1.7;">&nbsp;</div>
+        <div style="display:flex;align-items:center;margin-top:2px;">
+          <span id="cf-prompt" style="color:#00ff41;white-space:nowrap;font-size:13px;">C:\Users\Admin&gt;&nbsp;</span
+          ><span id="cf-typed"  style="color:#e0e0e0;white-space:pre;font-size:13px;"></span
+          ><span id="cf-cursor" style="
+            display:inline-block;width:8px;height:15px;
+            background:#00ff41;margin-left:1px;vertical-align:middle;
+          "></span>
+        </div>
       </div>
+      <div style="
+        position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;
+        background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);
+      "></div>
     </div>
-    <div style="padding:16px 20px 22px;">
-      <div style="color:#444;font-size:12px;line-height:1.7;white-space:pre;">Microsoft Windows [Version 10.0.19045.4170]</div>
-      <div style="color:#444;font-size:12px;line-height:1.7;white-space:pre;">(c) Microsoft Corporation. All rights reserved.</div>
-      <div style="font-size:12px;line-height:1.7;">&nbsp;</div>
-      <div style="display:flex;align-items:center;margin-top:2px;">
-        <span style="color:#00ff41;font-size:13px;white-space:nowrap;">C:\Users\Admin&gt;&nbsp;</span>
-        <span id="cf-typed" style="color:#e0e0e0;font-size:13px;white-space:pre;"></span
-        ><span id="cf-cursor" style="
-          display:inline-block;width:8px;height:15px;
-          background:#00ff41;margin-left:1px;vertical-align:middle;
-        "></span>
-      </div>
-    </div>
-    <div style="
-      position:absolute;top:0;left:0;right:0;bottom:0;pointer-events:none;
-      background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px);
-    "></div>
   </div>
 </div>
 
 <script>
 (function () {
-  var msg    = "동영상 아이디어가 없습니다. 제보바랍니다.";
-  var el     = document.getElementById('cf-typed');
-  var idx    = 0;
-  var TSPEED = 110, ESPEED = 65, PAUSE1 = 2200, PAUSE2 = 700;
-
-  function type() {
-    if (idx < msg.length) { el.textContent += msg[idx++]; setTimeout(type, TSPEED); }
-    else setTimeout(erase, PAUSE1);
-  }
-  function erase() {
-    if (el.textContent.length > 0) { el.textContent = el.textContent.slice(0,-1); setTimeout(erase, ESPEED); }
-    else { idx = 0; setTimeout(type, PAUSE2); }
-  }
+  /* ── 타이핑 ── */
+  var msg = "동영상 아이디어가 없습니다. 제보바랍니다.";
+  var typedEl = document.getElementById('cf-typed');
+  var idx=0, TSPEED=110, ESPEED=65, PAUSE1=2200, PAUSE2=700;
+  function type()  { if(idx<msg.length){typedEl.textContent+=msg[idx++];setTimeout(type,TSPEED);}else setTimeout(erase,PAUSE1); }
+  function erase() { if(typedEl.textContent.length>0){typedEl.textContent=typedEl.textContent.slice(0,-1);setTimeout(erase,ESPEED);}else{idx=0;setTimeout(type,PAUSE2);} }
   setTimeout(type, 900);
 
+  /* ── 반응형 스케일 ── */
+  var wrapper  = document.getElementById('cf-wrapper');
+  var frame    = document.getElementById('cf-frame');
+  var DESIGN_W = 600, DESIGN_H = 400;
+  var MIN_W    = 300;
+  var MIN_FONT = 10;
+
+  var FONTS = { 'cf-title':11, 'cf-sys1':12, 'cf-sys2':12, 'cf-prompt':13, 'cf-typed':13 };
+
+  function rescale() {
+    var cw    = wrapper.clientWidth;
+    var scale = Math.min(1, Math.max(MIN_W / DESIGN_W, cw / DESIGN_W));
+    frame.style.transform = 'scale(' + scale + ')';
+    wrapper.style.height  = Math.round(DESIGN_H * scale) + 'px';
+    Object.keys(FONTS).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.style.fontSize = Math.max(FONTS[id], MIN_FONT / scale) + 'px';
+    });
+  }
+
+  rescale();
+  window.addEventListener('resize', rescale);
+
   /* ── 파티클 ── */
-  var frame  = document.getElementById('cf-frame');
   var canvas = document.getElementById('cf-canvas');
   var ctx    = canvas.getContext('2d');
-  var W = 600, H = 400;
-  canvas.width = W; canvas.height = H;
+  var W=DESIGN_W, H=DESIGN_H;
+  canvas.width=W; canvas.height=H;
 
-  var mouse = { x: -999, y: -999 };
-  var FLEE_RADIUS = 90, FLEE_FORCE = 6.5, FRICTION = 0.88, RETURN_SPD = 0.045;
+  var mouse={x:-999,y:-999};
+  var FLEE_R=90, FLEE_F=6.5, FRIC=0.88, RET=0.045;
 
   frame.addEventListener('mousemove', function(e) {
     var r = frame.getBoundingClientRect();
-    mouse.x = e.clientX - r.left;
-    mouse.y = e.clientY - r.top;
+    var s = r.width / DESIGN_W;
+    mouse.x=(e.clientX-r.left)/s;
+    mouse.y=(e.clientY-r.top)/s;
   });
-  frame.addEventListener('mouseleave', function() { mouse.x = -999; mouse.y = -999; });
+  frame.addEventListener('mouseleave', function(){ mouse.x=-999; mouse.y=-999; });
 
-  var COLORS = [
-    'rgba(0,255,65,','rgba(0,200,50,','rgba(0,160,40,',
-    'rgba(100,255,120,','rgba(180,255,190,','rgba(0,255,200,',
-  ];
-
-  var DOS_L = 100, DOS_R = 500, DOS_T = 120, DOS_B = 280;
+  var COLORS=['rgba(0,255,65,','rgba(0,200,50,','rgba(0,160,40,','rgba(100,255,120,','rgba(180,255,190,','rgba(0,255,200,'];
+  var DL=100,DR=500,DT=120,DB=280;
 
   function spawnPos() {
-    var x, y, t = 0;
-    do { x = Math.random()*W; y = Math.random()*H; t++; }
-    while (t < 30 && x>DOS_L-20 && x<DOS_R+20 && y>DOS_T-20 && y<DOS_B+20);
-    return { x:x, y:y };
+    var x,y,t=0;
+    do{x=Math.random()*W;y=Math.random()*H;t++;}
+    while(t<30&&x>DL-20&&x<DR+20&&y>DT-20&&y<DB+20);
+    return{x:x,y:y};
   }
 
-  var particles = [];
-  for (var i = 0; i < 55; i++) {
-    var p = spawnPos();
-    var r = 2.5 + Math.random() * 7.5;
+  var particles=[];
+  for(var i=0;i<55;i++){
+    var p=spawnPos(), r=2.5+Math.random()*7.5;
     particles.push({
-      ox:p.x, oy:p.y, x:p.x, y:p.y, vx:0, vy:0,
-      r:r,
-      col: COLORS[Math.floor(Math.random()*COLORS.length)],
-      alpha: 0.3 + Math.random()*0.55,
-      floatAngle: Math.random()*Math.PI*2,
-      floatSpeed: 0.003 + Math.random()*0.007,
-      floatAmp:   4 + Math.random()*8,
+      ox:p.x,oy:p.y,x:p.x,y:p.y,vx:0,vy:0,r:r,
+      col:COLORS[Math.floor(Math.random()*COLORS.length)],
+      alpha:0.3+Math.random()*0.55,
+      fa:Math.random()*Math.PI*2,
+      fs:0.003+Math.random()*0.007,
+      famp:4+Math.random()*8,
     });
   }
 
   function animate() {
-    ctx.clearRect(0, 0, W, H);
-    for (var i = 0; i < particles.length; i++) {
-      var p = particles[i];
-      p.floatAngle += p.floatSpeed;
-      var tx = p.ox + Math.cos(p.floatAngle) * p.floatAmp;
-      var ty = p.oy + Math.sin(p.floatAngle * 0.7) * p.floatAmp;
-
-      var dx = p.x - mouse.x, dy = p.y - mouse.y;
-      var dist = Math.sqrt(dx*dx + dy*dy);
-      if (dist < FLEE_RADIUS && dist > 0) {
-        var force = (FLEE_RADIUS - dist) / FLEE_RADIUS * FLEE_FORCE;
-        p.vx += (dx/dist)*force;
-        p.vy += (dy/dist)*force;
-      }
-      p.vx += (tx - p.x) * RETURN_SPD;
-      p.vy += (ty - p.y) * RETURN_SPD;
-      p.vx *= FRICTION; p.vy *= FRICTION;
-      p.x  += p.vx;     p.y  += p.vy;
-
-      if (p.x < p.r) { p.x=p.r; p.vx*=-0.5; }
-      if (p.x > W-p.r) { p.x=W-p.r; p.vx*=-0.5; }
-      if (p.y < p.r) { p.y=p.r; p.vy*=-0.5; }
-      if (p.y > H-p.r) { p.y=H-p.r; p.vy*=-0.5; }
-
-      ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
-      ctx.fillStyle   = p.col + p.alpha + ')';
-      ctx.shadowColor = p.col + '0.8)';
-      ctx.shadowBlur  = p.r * 2;
-      ctx.fill();
-      ctx.shadowBlur = 0;
+    ctx.clearRect(0,0,W,H);
+    for(var i=0;i<particles.length;i++){
+      var p=particles[i];
+      p.fa+=p.fs;
+      var tx=p.ox+Math.cos(p.fa)*p.famp, ty=p.oy+Math.sin(p.fa*0.7)*p.famp;
+      var dx=p.x-mouse.x, dy=p.y-mouse.y, d=Math.sqrt(dx*dx+dy*dy);
+      if(d<FLEE_R&&d>0){var f=(FLEE_R-d)/FLEE_R*FLEE_F;p.vx+=(dx/d)*f;p.vy+=(dy/d)*f;}
+      p.vx+=(tx-p.x)*RET; p.vy+=(ty-p.y)*RET;
+      p.vx*=FRIC; p.vy*=FRIC;
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<p.r){p.x=p.r;p.vx*=-0.5;} if(p.x>W-p.r){p.x=W-p.r;p.vx*=-0.5;}
+      if(p.y<p.r){p.y=p.r;p.vy*=-0.5;} if(p.y>H-p.r){p.y=H-p.r;p.vy*=-0.5;}
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.col+p.alpha+')'; ctx.shadowColor=p.col+'0.8)'; ctx.shadowBlur=p.r*2;
+      ctx.fill(); ctx.shadowBlur=0;
     }
     requestAnimationFrame(animate);
   }
